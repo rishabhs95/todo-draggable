@@ -23,7 +23,7 @@ var defaults = {
     },
     codes = {
         "1": "#pending",
-        "2": "#done"
+        "2": "#completed"
     };
 
 // Remove task
@@ -56,7 +56,7 @@ var removeElement = function(id) {
                         object = data[id];
 
                     // Removing old element
-                    removeElement(object);
+                    removeObject(object);
                     // Changing object code
                     object.code = index;
                     // Generating new element
@@ -71,6 +71,10 @@ var removeElement = function(id) {
         });
     };
 
+    var removeObject = function (params) {
+        $("#" + defaults.taskId + params.id).remove();
+    };
+
     // Add Task
     var generateElement = function(params) {
         var parent = $(codes[params.code]),
@@ -78,18 +82,35 @@ var removeElement = function(id) {
         if (!parent) {
             return;
         }
-        wrapper = $("<div />", {
-            "class": defaults.todoTask,
-            "id": defaults.taskId + params.id,
-            "data": params.id
-        }).appendTo(parent);
+        if (params.code == 1) {
+            wrapper = $("<div />", {
+                "class": defaults.todoTask + "col-md-5 col-sm-5 col-xs-5",
+                "id": defaults.taskId + params.id,
+                "data": params.id,
+                "style": "margin: 10px 25px 10px 25px;text-align: center;height: 100px;font-size: 50px; overflow: auto;"
+            }).appendTo(parent);
+        }
+        else {
+            wrapper = $("<div />", {
+                "class": defaults.todoTask + "col-md-12 col-sm-12 col-xs-12",
+                "id": defaults.taskId + params.id,
+                "data": params.id,
+                "style": "margin: 10px 5px 10px 5px; text-align: center;height: 100px;font-size: 40px; overflow: auto;"
+            }).appendTo(parent);
+        }
         $('<a class="delete" onclick="removeElement(' + params.id + ')">X</a>').appendTo(wrapper);
         $("<div />", {
             "class": defaults.todoHeader,
             "text": params.title
         }).appendTo(wrapper);
 
-        $(wrapper).css('background', randomColor());
+        if (params.code == 1) {
+            $(wrapper).css('background', randomColor());
+        }
+
+        else {
+            $(wrapper).css('background', "white");
+        }
 
         wrapper.draggable({
             start: function() {
@@ -99,7 +120,8 @@ var removeElement = function(id) {
                 $("#" + defaults.deleteDiv).hide();
             },
             revert: "invalid",
-            revertDuration: 200
+            revertDuration: 200,
+            opacity: true
         });
 
     };

@@ -28,6 +28,10 @@ body{
     color: white;
 }
 
+#completed{
+    text-align: center;
+}
+
 #todo{
 	float: right;
 	font-size: 30px;
